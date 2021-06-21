@@ -22,12 +22,14 @@ func runAcp(lsr net.Listener) {
 func handleConn(connSrc net.Conn) {
 	defer func() {
 		if err := recover(); err != nil {
+			connSrc.Close()
 			Debugf("handleConn recover:%+v", err)
 			Debugf("%s", string(debug.Stack()))
 		}
 	}()
 	connTrg, err := net.DialTimeout("tcp", HostTarget, Timeout)
 	if err != nil {
+		connSrc.Close()
 		Errorf("connect %s failed:%v", HostTarget, err)
 		return
 	}

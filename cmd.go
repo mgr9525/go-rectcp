@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"errors"
@@ -21,12 +21,6 @@ var (
 	HostBind   = ""
 	HostTarget = ""
 )
-
-func Run() {
-	regs()
-	kingpin.Version(Version)
-	kingpin.MustParse(app.Parse(os.Args[1:]))
-}
 
 func regs() {
 	cmd := app.Command("run", "run process").Default().

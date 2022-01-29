@@ -1,10 +1,13 @@
-package cmd
+package main
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net"
 	"runtime/debug"
+
+	"github.com/mgr9525/go-ruisutil/ruisIo"
 )
 
 type Proxy struct {
@@ -75,14 +78,15 @@ func (c *Proxy) read1(buf []byte, ln1, ln2 *int64) error {
 	n, err := c.conn1.Read(buf)
 	if n > 0 {
 		*ln1 += int64(n)
-		nw, errw := c.conn2.Write(buf[:n])
-		*ln2 += int64(nw)
+		errw := ruisIo.TcpWrite(context.Background(), c.conn2, buf[:n])
+		// nw, errw := c.conn2.Write(buf[:n])
+		*ln2 += int64(n)
 		if errw != nil {
 			return errw
 		}
-		if n != nw {
+		/* if n != nw {
 			return errors.New("write len err")
-		}
+		} */
 	}
 	if err != nil {
 		return err
@@ -99,14 +103,15 @@ func (c *Proxy) read2(buf []byte, ln1, ln2 *int64) error {
 	n, err := c.conn2.Read(buf)
 	if n > 0 {
 		*ln1 += int64(n)
-		nw, errw := c.conn1.Write(buf[:n])
-		*ln2 += int64(nw)
+		errw := ruisIo.TcpWrite(context.Background(), c.conn1, buf[:n])
+		// nw, errw := c.conn1.Write(buf[:n])
+		*ln2 += int64(n)
 		if errw != nil {
 			return errw
 		}
-		if n != nw {
+		/* if n != nw {
 			return errors.New("write len err")
-		}
+		} */
 	}
 	if err != nil {
 		return err

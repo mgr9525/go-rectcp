@@ -1,7 +1,14 @@
 package main
 
-import "github.com/mgr9525/go-rectcp/cmd"
+import (
+	"os"
+
+	"gopkg.in/alecthomas/kingpin.v2"
+)
 
 func main() {
-	cmd.Run()
+	println("hello rectcp:", Version)
+	regs()
+	kingpin.Version(Version)
+	kingpin.MustParse(app.Parse(os.Args[1:]))
 }
